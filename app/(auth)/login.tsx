@@ -24,8 +24,7 @@ import { Divider } from "@/components/ui/divider";
 
 export default function Connexion() {
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState('');
+  
   const {locale,t} = useLg()
   const router = useRouter();
   const {isLoggedIn, login } = useUser();
@@ -39,12 +38,7 @@ export default function Connexion() {
 
   const [canLeave, setCanLeave] = useState(false); // false = on bloque le retour
 
-  const showMessage = (message: string) => {
-    setMessage(message);
-    setTimeout(() => {
-      setMessage('');
-    }, 5000);
-  };
+  
 
   
     useEffect(() => {

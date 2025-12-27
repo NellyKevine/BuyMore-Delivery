@@ -1,5 +1,3 @@
-import { useLg } from "../../components/langue/MyLanguageProvider";
-
 import {
   Avatar,
   AvatarBadge,
@@ -32,6 +30,7 @@ import { VStack } from "@/components/ui/vstack";
 import React, { useState } from "react";
 import { useTheme } from "../../components/theme/MyThemeProvider";
 import {useUser} from "../../components/user/MyUserProvider";
+import { useLg } from "../../components/langue/MyLanguageProvider";
 import {  useRouter } from 'expo-router';
 import {  TouchableOpacity,StatusBar, Pressable } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -68,10 +67,6 @@ export default function SettingsPage() {
   };
 
   
-
-  //  Déterminer le thème actuel
-  const currentTheme = isDark ? "Sombre" : "Clair";
-  const currentLangue = locale === "fr" ? "Français" : "English";
   return (
     <SafeAreaView className="flex-1 bg-fc-primary " edges={['top']}>
 

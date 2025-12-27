@@ -6,6 +6,7 @@ import { delivery_detailLg_en, delivery_detailLg_fr } from "./lg/delivery-detail
 import { mapLg_en, mapLg_fr } from "./lg/mapLg"
 import { profilLg_en, profilLg_fr } from "./lg/profileLg"
 import { editProfilLg_en, editProfilLg_fr } from "./lg/editProfilLg"
+import { historyLg_en, historyLg_fr } from "./lg/historiqueLg"
 
 export const en = {
 
@@ -17,6 +18,9 @@ export const en = {
   ...profilLg_en,
   ...editProfilLg_en,
   ...mapLg_en,
+  ...historyLg_en,
+
+
 
   notLoggedIn: "Not logged in",
   logout: "Log out",
@@ -31,6 +35,7 @@ export const fr = {
   ...profilLg_fr,
   ...editProfilLg_fr,
   ...mapLg_fr,
+  ...historyLg_fr,
 
   permission_scan: "BuyMore-Livraison n'a pas acces a votre",
   notLoggedIn: "Non connecté",

@@ -87,13 +87,10 @@ export default function EditProfil() {
     if (validateForm()) {
       Keyboard.dismiss(); 
       updateUser({
-        id:user.id,
         name: inputName,
         email: inputEmail,
         number: inputNumber,
         uriImage: uriImage,
-        nbreCalcul:user.nbreCalcul,
-        isLoggedIn: true,
       });
       comeBack();
     }
@@ -137,7 +134,7 @@ export default function EditProfil() {
       <VStack className="flex-1 pt-5 px-3 items-center justify-center w-full">
         <HStack space="lg" className='w-full items-center'>
             <TouchableOpacity onPress={reset} className="ml-1" >
-                <Ionicons name="chevron-back" size={30} color="#155FDC" />
+                <Ionicons name="chevron-back" size={30} color=" #155FDC" />
             </TouchableOpacity>
             <Text size="2xl" bold className="text-center text-fc-primary  ml-2">{t("edt_editProfil")}</Text>
         </HStack>

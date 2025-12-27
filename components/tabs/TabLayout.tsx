@@ -1,8 +1,8 @@
 import { useLg } from '@/components/langue/MyLanguageProvider';
 import { useTheme } from '@/components/theme/MyThemeProvider';
-import { Ionicons } from '@expo/vector-icons';
+import { AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Tabs, useRouter } from 'expo-router';
-import { Platform, TouchableOpacity } from 'react-native';
+import { Platform, TouchableOpacity, View, Text} from 'react-native';
 import { useUser } from '../user/MyUserProvider';
 
 export default function TabLayout() {
@@ -10,7 +10,7 @@ export default function TabLayout() {
   const { isLoggedIn } = useUser();
   const { t } = useLg();
   const router = useRouter();
-  const goToPtofil = () => {
+  const goToProfil = () => {
     router.push('/profile');
   }
   
@@ -41,13 +41,27 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'BuyMore',
+          
           tabBarLabel: t('acc_accueil'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
           ),
+          headerStyle: {
+           elevation: 0, // Supprime l'ombre sous le header
+           shadowOpacity: 0,
+          },
+          headerTitle: () => (
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={{ fontSize: 24, fontWeight: '800', color: '#155FDC' }}>
+                Buy
+              </Text>
+              <Text style={{ fontSize: 24, fontWeight: '800', color: '#bf35ffff' }}>
+               More
+              </Text>
+            </View>
+          ),
           headerRight: () => (
-            <TouchableOpacity onPress={goToPtofil} style={{ marginRight: 15 }}>
+            <TouchableOpacity onPress={goToProfil} style={{ marginRight: 15 }}>
               <Ionicons name="person-circle-outline" size={35} color="#155FDC" />
             </TouchableOpacity>
           ),
@@ -67,6 +81,18 @@ export default function TabLayout() {
         }}
       />
 
+      {/* Historique */}
+      <Tabs.Screen
+        name="historique"
+        options={{
+          title: t('his_history'),
+          tabBarLabel: t('his_history'),
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="history" size={size} color={color} />
+          ),
+          headerShown: false,
+        }}
+      />
       
 
       
@@ -97,6 +123,15 @@ export default function TabLayout() {
 
       <Tabs.Screen
         name="editProfil"
+        options={{
+          href: null, // masque dans le tab
+          headerShown: false,
+          tabBarStyle: { display: 'none' }
+        }}
+      />
+
+      <Tabs.Screen
+        name="scanCode"
         options={{
           href: null, // masque dans le tab
           headerShown: false,
