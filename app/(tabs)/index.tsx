@@ -1,12 +1,11 @@
 
 import { Box } from "@/components/ui/box";
 
-
 export default function HomeScreen() {
   
 
   return (
-    <Box className="flex-1 bg-gray-100 pt-12">
+    <Box className="flex-1 bg-white pt-12">
       
       
     </Box>
