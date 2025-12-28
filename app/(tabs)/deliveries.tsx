@@ -18,73 +18,75 @@ const [refreshing, setRefreshing] = useState(false);
 
 // Simulation chargement
 const loadDeliveries = () => {
-setTimeout(() => {
-setDeliveries(fakeDeliveries);
-setLoading(false);
-setRefreshing(false);
-}, 800);
+    setTimeout(() => {
+    setDeliveries(fakeDeliveries);
+    setLoading(false);
+    setRefreshing(false);
+    }, 800);
 };
 
+const onRefresh = () => {
+    setRefreshing(true);
+    loadDeliveries();
+};
+
+{/*
 // Chargement quand l'auth est fini ET l'utilisateur est connecté
 useEffect(() => {
 if (!isAuthLoading && isLoggedIn) { // ← clé : attendre que l'auth soit fini !
-loadDeliveries();
+    loadDeliveries();
 }
 }, [isAuthLoading, isLoggedIn]); // ← dépendances importantes
 
-const onRefresh = () => {
-setRefreshing(true);
-loadDeliveries();
-};
 
 // Si auth charge encore → on montre rien (splash géré par root)
 if (isAuthLoading) {
-return null;
+    return null;
 }
 
 // Si pas connecté → message ou redirection (mais root gère ça)
 if (!isLoggedIn) {
-return (
-<Box className="flex-1 justify-center items-center bg-gray-50">
-<Text className="text-xl text-gray-600">Veuillez vous connecter</Text>
-</Box>
-);
+    return (
+        <Box className="flex-1 justify-center items-center bg-gray-50">
+        <Text className="text-xl text-gray-600">Veuillez vous connecter</Text>
+        </Box>
+        );
 }
 
 // Écran de chargement des livraisons
 if (loading) {
-return (
-<Box className="flex-1 justify-center items-center bg-gray-50">
-<Spinner size="large" className="text-primary-600" />
-<Text className="mt-4 text-lg text-gray-600">
-Chargement des livraisons...
-</Text>
-</Box>
-);
-}
+    return (
+        <Box className="flex-1 justify-center items-center bg-gray-50">
+        <Spinner size="large" className="text-primary-600" />
+        <Text className="mt-4 text-lg text-gray-600">
+        Chargement des livraisons...
+        </Text>
+        </Box>
+        );
+}*/}
 
 return (
 <Box className="flex-1 bg-gray-100 pt-12">
-<FlatList
-data={deliveries}
-keyExtractor={(item) => item.id}
-renderItem={({ item }) => <DeliveryCard delivery={item} />}
-contentContainerStyle={{ padding: 16 }}
-ListEmptyComponent={
-<Box className="flex-1 justify-center items-center mt-20 px-8">
-<Text className="text-xl text-gray-500 text-center">
-Aucune livraison disponible pour le moment
-</Text>
-<Text className="text-sm text-gray-500 mt-3 text-center">
-Revenez plus tard ou tirez vers le bas pour rafraîchir 🙂
-</Text>
-</Box>
-}
-refreshControl={
-<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-}
-showsVerticalScrollIndicator={false}
-/>
+    <FlatList
+    data={deliveries}
+    keyExtractor={(item) => item.id}
+    renderItem={({ item }) => <DeliveryCard delivery={item} />}
+    contentContainerStyle={{ padding: 16 }}
+    ListEmptyComponent={
+        <Box className="flex-1 justify-center items-center mt-20 px-8">
+            <Text className="text-xl text-gray-500 text-center">
+            Aucune livraison disponible pour le moment
+            </Text>
+            <Text className="text-sm text-gray-500 mt-3 text-center">
+            Revenez plus tard ou tirez vers le bas pour rafraîchir 🙂
+            </Text>
+        </Box>
+    }
+    refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+    }
+    showsVerticalScrollIndicator={false}
+    />
 </Box>
 );
 }

@@ -33,7 +33,7 @@ export default function Inscription() {
   const goToConnexion = () => {
     router.push("/login");
   };
-  const { signup } = useUser();
+  const {  } = useUser();
 
 
 
@@ -64,7 +64,6 @@ export default function Inscription() {
   // ✅ Tous les states
   const [inputName, setInputName] = useState("");
   const [inputEmail, setInputEmail] = useState("");
-  const [inputNumber, setInputNumber] = useState("");
 
   // ✅ États d'erreur
   const [nameError, setNameError] = useState("");
@@ -90,23 +89,7 @@ export default function Inscription() {
       setEmailError("");
     }
 
-    if (!inputNumber || inputNumber.length != 9) {
-      setPhoneError("Numéro de téléphone invalide");
-      isValid = false;
-      toast.show({
-        placement: "top",
-        render: () => (
-          <Toast action="error" variant="outline">
-            <ToastTitle>Erreur</ToastTitle>
-            <ToastDescription>
-              Numéro incorrect ou utilisateur introuvable.
-            </ToastDescription>
-          </Toast>
-        ),
-      });
-    } else {
-      setPhoneError("");
-    }
+    
 
     return isValid;
   };
@@ -114,7 +97,7 @@ export default function Inscription() {
   const handleSubmit = () => {
     if (validateForm()) {
       Keyboard.dismiss();
-      signup(inputName, inputEmail, inputNumber);
+      //signup(inputName, inputEmail);
       setCanLeave(true);
       goToConnexion();
     }
@@ -262,50 +245,7 @@ export default function Inscription() {
                       )}
                     </VStack>
                   </FormControl>
-                  <FormControl isInvalid={!!phoneError} size="md">
-                    <VStack space="xs" className="w-full px-10 mb-7">
-                      <Text className="text-black">Numero de Telephone</Text>
-                      <HStack space="lg" className="items-center  ">
-                        <Input
-                          variant="underlined"
-                          size="sm"
-                          isDisabled
-                          className="w-1/5 ml-2"
-                        >
-                          <InputField value="+237" />
-                          <Ionicons
-                            name="chevron-down"
-                            size={17}
-                            color="#737374ff"
-                          />
-                        </Input>
-
-                        <Input
-                          variant="underlined"
-                          size="sm"
-                          className="w-3/4 "
-                        >
-                          <InputField
-                            placeholder="Numero de Telephone"
-                            onChangeText={(text) => {
-                              setInputNumber(text);
-                              if (phoneError) setPhoneError("");
-                            }}
-                            keyboardType="phone-pad"
-                          />
-                        </Input>
-                      </HStack>
-
-                      {phoneError && (
-                        <FormControlError>
-                          <FormControlErrorIcon as={AlertCircleIcon} />
-                          <FormControlErrorText>
-                            {phoneError}
-                          </FormControlErrorText>
-                        </FormControlError>
-                      )}
-                    </VStack>
-                  </FormControl>
+                  
                   <VStack space="lg" className="w-full items-center mt-5">
                     <Button
                       variant="solid"

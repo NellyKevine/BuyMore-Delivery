@@ -10,18 +10,58 @@ import { MyUserProvider } from "../components/user/MyUserProvider";
 
 import "../global.css";
 
+import * as Notifications from "expo-notifications";
+import { useRouter } from "expo-router";
+import { Alert } from "react-native";
+
+// Configuration À JOUR pour Expo SDK 54
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowBanner: true,
+    shouldShowList: true,     // ← La ligne qui manquait !
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
 // Garde le splash visible un peu
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  // On cache le splash après 1 seconde, même si pas chargé
+  const router = useRouter(); // ← Maintenant à l'intérieur du composant → OK !
+
+  useEffect(() => {
+    // Quand l'utilisateur clique sur une notification (app fermée ou en arrière-plan)
+    const subscription1 = Notifications.addNotificationResponseReceivedListener((response) => {
+      console.log("Notification cliquée !", response);
+
+      // Redirection vers l'écran des livraisons (adapte le chemin si besoin)
+      router.replace("/deliveries");
+    });
+
+    // Quand une notification arrive pendant que l'app est ouverte
+    const subscription2 = Notifications.addNotificationReceivedListener((notification) => {
+      console.log("Notification reçue en premier plan :", notification);
+
+      Alert.alert(
+        notification.request.content.title || "Nouvelle commande",
+        notification.request.content.body || "Vous avez une nouvelle livraison !",
+      );
+    });
+
+    return () => {
+      subscription1.remove();
+      subscription2.remove();
+    };
+  }, [router]); // dépendance router
+
+  // Cache le splash après 0.5 seconde
   useEffect(() => {
     setTimeout(() => {
       SplashScreen.hideAsync();
     }, 500);
   }, []);
 
-  // FORCE L'AFFICHAGE DES TABS (temporaire pour débloquer)
   return (
     <SafeAreaProvider>
       <MyThemeProvider>
@@ -34,52 +74,3 @@ export default function RootLayout() {
     </SafeAreaProvider>
   );
 }
-
-/*
-import { Slot, Redirect } from "expo-router";
-import { useEffect } from "react";
-import * as SplashScreen from "expo-splash-screen";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-
-import { MyThemeProvider } from "../components/theme/MyThemeProvider";
-import { MyLanguageProvider } from "../components/langue/MyLanguageProvider";
-import { MyUserProvider, useUser } from "../components/user/MyUserProvider"; // ← suppose que tu as un hook useUser
-
-import "../global.css";
-
-// Empêche le splash natif de disparaître trop tôt
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const { user, isLoading } = useUser(); // ← ton hook qui dit si connecté et si chargement fini
-
-  // Une fois que le check auth est terminé → on cache le splash
-  useEffect(() => {
-    if (!isLoading) {
-      SplashScreen.hideAsync();
-    }
-  }, [isLoading]);
-
-  // Pendant le chargement → on montre RIEN (le splash natif reste visible)
-  if (isLoading) {
-    return null;
-  }
-
-  // Si pas connecté → on envoie vers le login
-  if (!user) {
-    return <Redirect href="/(auth)/login" />;
-  }
-
-  // Si connecté → on montre toute l’app (les onglets, etc.)
-  return (
-    <SafeAreaProvider>
-      <MyThemeProvider>
-        <MyLanguageProvider>
-          <MyUserProvider>
-            <Slot />
-          </MyUserProvider>
-        </MyLanguageProvider>
-      </MyThemeProvider>
-    </SafeAreaProvider>
-  );
-}*/

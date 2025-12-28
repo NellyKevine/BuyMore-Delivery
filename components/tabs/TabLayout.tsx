@@ -2,8 +2,10 @@ import { useLg } from '@/components/langue/MyLanguageProvider';
 import { useTheme } from '@/components/theme/MyThemeProvider';
 import { AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Tabs, useRouter } from 'expo-router';
-import { Platform, TouchableOpacity, View, Text} from 'react-native';
+import { Platform, TouchableOpacity, View } from 'react-native';
+import {Text} from "@/components/ui/text";
 import { useUser } from '../user/MyUserProvider';
+import { HStack } from '../ui/hstack';
 
 export default function TabLayout() {
   const { isDark } = useTheme();
@@ -47,22 +49,22 @@ export default function TabLayout() {
             <Ionicons name="home" size={size} color={color} />
           ),
           headerStyle: {
-           elevation: 0, // Supprime l'ombre sous le header
+           elevation: 1, // Supprime l'ombre sous le header
            shadowOpacity: 0,
           },
           headerTitle: () => (
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={{ fontSize: 24, fontWeight: '800', color: '#155FDC' }}>
+            <HStack className="flex-row items-center ">
+              <Text style={{ fontSize: 24, fontWeight: '800', color: '#155FDC' }} >
                 Buy
               </Text>
-              <Text style={{ fontSize: 24, fontWeight: '800', color: '#bf35ffff' }}>
+              <Text style={{ fontSize: 24, fontWeight: '800', color: 'white',textShadowColor: '#155FDC',textShadowOffset: { width: 0, height: 0 },textShadowRadius: 10,}}>
                More
               </Text>
-            </View>
+            </HStack>
           ),
           headerRight: () => (
-            <TouchableOpacity onPress={goToProfil} style={{ marginRight: 15 }}>
-              <Ionicons name="person-circle-outline" size={35} color="#155FDC" />
+            <TouchableOpacity onPress={goToProfil} style={{ marginRight: 15,}} >
+              <Ionicons name="notifications-outline" size={24} color="#155FDC" />
             </TouchableOpacity>
           ),
         }}

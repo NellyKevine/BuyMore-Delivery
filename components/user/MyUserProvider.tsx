@@ -1,17 +1,22 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
-import { useToast, Toast, ToastTitle, ToastDescription } from "../ui/toast";
+import { Alert } from "react-native";
 import { useRouter } from "expo-router";
+import axios from "axios";
+import * as Notifications from "expo-notifications";
 
-// Type utilisateur
+// === À CHANGER : ton URL réelle (pas 127.0.0.1 en production !) ===
+const API_BASE_URL = "https://tp4buymore-production.up.railway.app"; // Plus tard : https://tondomaine.com
+
+// Type utilisateur selon ta réponse /profile
 export type User = {
-  id: string;
+  id: number | string;
   name: string;
   email: string;
-  number: string;
+  created_at?: string;
+  updated_at?: string;
   uriImage?: string;
-  statut:string;
 };
 
 type UserContextType = {
@@ -19,21 +24,13 @@ type UserContextType = {
   token: string | null;
   isLoggedIn: boolean;
   isLoading: boolean;
-  login: (number: string) => Promise<void>;
-  signup: (name: string, email: string, number: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   updateUser: (updatedData: Partial<User>) => void;
   changeUriImage: (uriImage: string) => void;
 };
 
-const defaultUser: User = {
-  id: "",
-  name: "",
-  email: "",
-  number: "",
-  uriImage: "",
-  statut: "",
-};
+const defaultUser: User = { id: "", name: "", email: "" };
 
 const UserContext = createContext<UserContextType>({
   user: defaultUser,
@@ -41,7 +38,6 @@ const UserContext = createContext<UserContextType>({
   isLoggedIn: false,
   isLoading: true,
   login: async () => {},
-  signup: async () => {},
   logout: async () => {},
   updateUser: () => {},
   changeUriImage: () => {},
@@ -49,27 +45,20 @@ const UserContext = createContext<UserContextType>({
 
 export const useUser = () => useContext(UserContext);
 
-type UserProviderProps = {
-  children: ReactNode;
-};
-
-// === UTILISATEUR FAKE POUR LES TESTS ===
-const fakeUser: User = {
-  id: "1",
-  name: "Ahmed Livreurs",
-  email: "ahmed@exemple.com",
-  number: "0601020304",
-  uriImage: undefined,
-  statut:"Disponible",
-};
-const fakeToken = "fake-jwt-token-pour-dev";
+type UserProviderProps = { children: ReactNode };
 
 export function MyUserProvider({ children }: UserProviderProps) {
   const [user, setUser] = useState<User>(defaultUser);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const toast = useToast();
   const router = useRouter();
+
+  // Axios avec token automatique
+  const api = axios.create({ baseURL: API_BASE_URL , timeout: 12000, });
+  api.interceptors.request.use((config) => {
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+  });
 
   const saveToken = async (newToken: string) => {
     await SecureStore.setItemAsync("authToken", newToken);
@@ -87,54 +76,88 @@ export function MyUserProvider({ children }: UserProviderProps) {
     saveUserData(updated);
   };
 
-  const changeUriImage = (uriImage: string) => {
-    updateUser({ uriImage });
+  const changeUriImage = (uriImage: string) => updateUser({ uriImage });
+
+  // Récupère le profil
+  const fetchUserProfile = async () => {
+    try {
+      const response = await api.get("/api/livreur/profile");
+      await saveUserData(response.data);
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.status === 401) await logout();
+      throw error;
+    }
   };
 
-  // === FONCTION FAKE LOGIN (appelée depuis login ou signup) ===
-  const fakeDevLogin = async (nameForToast: string = "Livreur") => {
-    await saveToken(fakeToken);
-    await saveUserData(fakeUser);
+  // Récupère le FCM token et le renvoie (ou vide si pas de permission)
+  const getFcmToken = async (): Promise<string> => {
+    try {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== "granted") return "";
 
-    toast.show({
-      placement: "top",
-      render: () => (
-        <Toast action="success" variant="solid">
-          <ToastTitle>Connexion réussie (mode dev)</ToastTitle>
-          <ToastDescription>Bienvenue {nameForToast} ! 🚀</ToastDescription>
-        </Toast>
-      ),
-    });
-
-    router.replace("/"); // replace pour éviter de revenir en arrière sur login
+      const pushToken = await Notifications.getExpoPushTokenAsync({
+        projectId: "ton-project-id-expo", // À vérifier sur expo.dev
+      });
+      return pushToken.data;
+    } catch {
+      return "";
+    }
   };
 
-  // Login : pour l’instant fake, à remplacer plus tard par axios
-  const login = async (number: string) => {
-    console.log("Tentative de connexion avec :", number);
-    // Simulation petite attente
-    await new Promise(resolve => setTimeout(resolve, 800));
-    await fakeDevLogin("Ahmed");
+  // === CONNEXION ===
+  const login = async (email: string, password: string) => {
+    try {
+      console.log("Hey");
+      const fcmToken = await getFcmToken();
+      
+      const response = await axios.post(`${API_BASE_URL}/api/livreur/login`, {
+        email,
+        password,
+        fcm_token: fcmToken,
+      });
+
+      const { token: jwtToken } = response.data;
+      await saveToken(jwtToken);
+
+      const userData = await fetchUserProfile();
+
+      Alert.alert(
+        "Connexion réussie !",
+        `Bienvenue ${userData.name} 👋`,
+        [{ text: "OK", onPress: () => router.replace("/") }]
+      );
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message ||
+        (error.response?.status === 401
+          ? "Email ou mot de passe incorrect"
+          : "Erreur réseau");
+
+      Alert.alert("Échec de connexion", message, [{ text: "OK" }]);
+    }
   };
 
-  // Signup : pour l’instant fake aussi
-  const signup = async (name: string, email: string, number: string) => {
-    console.log("Inscription :", name, number);
-    await new Promise(resolve => setTimeout(resolve, 800));
-    // On utilise le nom saisi pour le toast
-    await fakeDevLogin(name || "Nouveau livreur");
-  };
-
-  // Déconnexion réelle
+  // === DÉCONNEXION ===
   const logout = async () => {
+    try {
+      // On appelle l'endpoint logout du serveur pour invalider le token
+      await api.post("/api/livreur/logout");
+    } catch (error) {
+      console.log("Erreur lors du logout serveur, on continue localement");
+    }
+
     await SecureStore.deleteItemAsync("authToken");
     await AsyncStorage.removeItem("userData");
     setUser(defaultUser);
     setToken(null);
-    router.push("/(auth)/login");
+
+    Alert.alert("Déconnexion", "Vous êtes déconnecté.", [
+      { text: "OK", onPress: () => router.push("/(auth)/login") },
+    ]);
   };
 
-  // Chargement au démarrage : uniquement ce qui est en mémoire
+  // Chargement au démarrage
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -145,16 +168,21 @@ export function MyUserProvider({ children }: UserProviderProps) {
           setToken(storedToken);
           setUser(JSON.parse(storedUser));
         }
-        // PAS de fake login automatique ici → on veut voir les pages auth !
       } catch (error) {
-        console.error("Erreur chargement auth :", error);
+        console.error("Erreur chargement auth", error);
       } finally {
         setIsLoading(false);
       }
     };
-
     loadData();
   }, []);
+
+  // Si token présent mais pas d'user → on rafraîchit le profil
+  useEffect(() => {
+    if (token && !user.id && !isLoading) {
+      fetchUserProfile().catch(() => logout());
+    }
+  }, [token, user.id, isLoading]);
 
   const isLoggedIn = !!user.id && !!token;
 
@@ -166,7 +194,6 @@ export function MyUserProvider({ children }: UserProviderProps) {
         isLoggedIn,
         isLoading,
         login,
-        signup,
         logout,
         updateUser,
         changeUriImage,
@@ -176,223 +203,3 @@ export function MyUserProvider({ children }: UserProviderProps) {
     </UserContext.Provider>
   );
 }
-
-/*
-import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as SecureStore from "expo-secure-store";
-import { useToast, Toast, ToastTitle, ToastDescription } from "../ui/toast";
-import axios from "axios"; // À installer : npx expo install axios
-import { useRouter } from "expo-router";
-
-// Type de l'utilisateur renvoyé par Laravel
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  number: string;
-  uriImage?: string;
-};
-
-// Type du contexte
-type UserContextType = {
-  user: User ;
-  token: string | null;
-  isLoggedIn: boolean;
-  isLoading: boolean;
-  login: (number: string, password: string) => Promise<void>;
-  signup: (name: string, email: string, number: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-  updateUser: (updatedData: Partial<User>) => void;
-  changeUriImage: (uriImage: string) => void;
-};
-
-//  Utilisateur par défaut (non connecté)
-const defaultUser: User = {
-  id:"",
-  name: "",
-  email: "",
-  number: "",
-  uriImage: "",
-};
-
-const UserContext = createContext<UserContextType>({
-  user: defaultUser,
-  token: null,
-  isLoggedIn: false,
-  isLoading: true,
-  login: async () => {},
-  signup: async () => {},
-  logout: async () => {},
-  updateUser: () => {},
-  changeUriImage: () => {},
-});
-
-export const useUser = () => useContext(UserContext);
-
-type UserProviderProps = {
-  children: ReactNode;
-};
-
-export function MyUserProvider({ children }: UserProviderProps) {
-  const [user, setUser] = useState<User>(defaultUser);
-  const [token, setToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);//Important pour le splash screen
-  const toast = useToast();
-  const router = useRouter();
-
-  // Sauvegarde sécurisée du token
-  const saveToken = async (newToken: string) => {
-    await SecureStore.setItemAsync("authToken", newToken);
-    setToken(newToken);
-  };
-
-  // Sauvegarde des infos utilisateur (moins sensible)
-  const saveUserData = async (userData: User) => {
-    await AsyncStorage.setItem("userData", JSON.stringify(userData));
-    setUser(userData);
-  };
-
-  // Mise à jour partielle du profil
-  const updateUser = (updatedData: Partial<User>) => {
-    if (!user) return;
-    const updatedUser = { ...user, ...updatedData };
-    setUser(updatedUser);
-    saveUserData(updatedUser);
-  };
-
-  const changeUriImage = (uriImage: string) => {
-    updateUser({ uriImage });
-  };
-
-  // Connexion avec Laravel
-  const login = async (number: string, password: string) => {
-    try {
-      const response = await axios.post("https://ton-api-laravel.com/api/livreur/login", {
-        number,
-        password,
-      });
-
-      const { token: jwtToken, user: userData } = response.data; // Laravel renvoie généralement ça
-
-      await saveToken(jwtToken);
-      await saveUserData(userData);
-
-      toast.show({
-        placement: "top",
-        render: () => (
-          <Toast action="success" variant="outline">
-            <ToastTitle>Connexion réussie !</ToastTitle>
-            <ToastDescription>Bienvenue {userData.name} 👋</ToastDescription>
-          </Toast>
-        ),
-      });
-
-      router.push("/"); // Vers les tabs
-    } catch (error: any) {
-      let message = "Erreur inconnue";
-      if (error.response?.data?.message) {
-        message = error.response.data.message;
-      } else if (error.message) {
-        message = error.message;
-      }
-
-      toast.show({
-        placement: "top",
-        render: () => (
-          <Toast action="error" variant="outline">
-            <ToastTitle>Échec de connexion</ToastTitle>
-            <ToastDescription>{message}</ToastDescription>
-          </Toast>
-        ),
-      });
-    }
-  };
-
-  // Inscription (si ton API le permet)
-  const signup = async (name: string, email: string, number: string, password: string) => {
-    try {
-      const response = await axios.post("https://ton-api-laravel.com/api/livreur/register", {
-        name,
-        email,
-        number,
-        password,
-      });
-
-      const { token: jwtToken, user: userData } = response.data;
-
-      await saveToken(jwtToken);
-      await saveUserData(userData);
-
-      toast.show({
-        placement: "top",
-        render: () => (
-          <Toast action="success" variant="outline">
-            <ToastTitle>Inscription réussie !</ToastTitle>
-            <ToastDescription>Bienvenue {name} !</ToastDescription>
-          </Toast>
-        ),
-      });
-
-      router.push("/");
-    } catch (error: any) {
-      toast.show({
-        placement: "top",
-        render: () => (
-          <Toast action="error" variant="outline">
-            <ToastTitle>Erreur inscription</ToastTitle>
-            <ToastDescription>{error.response?.data?.message || "Erreur réseau"}</ToastDescription>
-          </Toast>
-        ),
-      });
-    }
-  };
-
-  // Déconnexion
-  const logout = async () => {
-    await SecureStore.deleteItemAsync("authToken");
-    await AsyncStorage.removeItem("userData");
-    setUser(defaultUser);
-    setToken(null);
-    router.push("/(auth)/login");
-  };
-
-  // Chargement au démarrage de l'app
-  useEffect(() => {
-    const loadStoredData = async () => {
-      try {
-        const storedToken = await SecureStore.getItemAsync("authToken");
-        const storedUser = await AsyncStorage.getItem("userData");
-
-        if (storedToken && storedUser) {
-          setToken(storedToken);
-          setUser(JSON.parse(storedUser));
-        }
-      } catch (error) {
-        console.error("Erreur chargement auth :", error);
-      } finally {
-        setIsLoading(false); // Très important pour cacher le splash
-      }
-    };
-
-    loadStoredData();
-  }, []);
-
-  return (
-    <UserContext.Provider
-      value={{
-        user,
-        token,
-        isLoggedIn: !!user && !!token,
-        isLoading,
-        login,
-        signup,
-        logout,
-        updateUser,
-        changeUriImage,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
-  );
-}*/
