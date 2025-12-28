@@ -1,3 +1,3 @@
-import TabLayout from '@/components/tabs/TabLayout';
+import StackLayout from '@/components/tabs/TabLayout';
 
-export default TabLayout;
+export default StackLayout;

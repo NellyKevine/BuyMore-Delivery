@@ -66,8 +66,9 @@ export function DrawerLayout() {
         onPress={() => {
           setShowDrawer(true);
         }}
+        style={{ marginRight: 20 }}
       >
-        <Icon as={MenuIcon} size="xl" className="text-white" />
+        <Icon as={MenuIcon} size="xl" className="text-fc-primary" />
         
       </Pressable>
       <Drawer
@@ -80,7 +81,7 @@ export function DrawerLayout() {
         
       >
         <DrawerBackdrop />
-        <DrawerContent className="w-[270px] md:w-[300px] py-10">
+        <DrawerContent className="w-[270px] md:w-[300px] py-11">
           <DrawerHeader className="justify-center flex-col gap-2">
             <Avatar size="2xl" className="bg-indigo-600  ">
                 {user.uriImage?

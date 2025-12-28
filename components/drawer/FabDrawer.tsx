@@ -10,10 +10,10 @@ export function FabDrawer() {
       <Fab
         size="md"
         placement="top right"
-        isHovered={true}
+        isHovered={false}
         isDisabled={false}
         isPressed={false}
-        className="bg-fc-neutral rounded-xl rounded-br-none rounded-tr-none shadow-2xl mt-7"
+        className="bg-fc-neutral rounded-xl rounded-br-none rounded-tr-none shadow-2xl "
       >
         <DrawerLayout />
         
