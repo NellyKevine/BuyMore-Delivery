@@ -1,4 +1,4 @@
-
+/*
 import { Box } from "@/components/ui/box";
 import { Text } from "@/components/ui/text";
 import { HStack } from "@/components/ui/hstack";
@@ -40,9 +40,9 @@ export function DeliveryCard({ delivery }: { delivery: Delivery }) {
         <HStack className="justify-between items-center mt-4">
           <Badge
             className={
-              delivery.status === "available"
+               "available"
                 ? "bg-blue-500"
-                : delivery.status === "assigned"
+                :  "assigned"
                 ? "bg-orange-500"
                 : "bg-green-500"
             }
@@ -62,4 +62,4 @@ export function DeliveryCard({ delivery }: { delivery: Delivery }) {
       </Box>
     </TouchableOpacity>
   );
-}
+}*/

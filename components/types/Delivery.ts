@@ -1,4 +1,4 @@
-import { DeliveryStatus } from "./OrderStatus";
+import { OrderStatus } from "./OrderStatus";
 
 export type Delivery = {
   id: string;
@@ -7,7 +7,7 @@ export type Delivery = {
   delivery_address: string;
   distance: string;
   amount: number;
-  status: DeliveryStatus;
+  status: OrderStatus;
   items: string[];        // Contenu de la commande
   phone: string;          // Téléphone client
   notes?: string;         // Notes spéciales
