@@ -4,7 +4,7 @@ import { accueilLg_en, accueilLg_fr } from "./lg/accueilLg"
 import { deliveriesLg_en, deliveriesLg_fr } from "./lg/deliveriesLg"
 import { delivery_detailLg_en, delivery_detailLg_fr } from "./lg/delivery-detailLg"
 import { mapLg_en, mapLg_fr } from "./lg/mapLg"
-import { profilLg_en, profilLg_fr } from "./lg/profileLg"
+import { settingLg_en, settingLg_fr } from "./lg/settingLg"
 import { editProfilLg_en, editProfilLg_fr } from "./lg/editProfilLg"
 import { historyLg_en, historyLg_fr } from "./lg/historiqueLg"
 
@@ -15,7 +15,7 @@ export const en = {
   ...delivery_detailLg_en,
   ...accueilLg_en,
   ...signupLg_en,
-  ...profilLg_en,
+  ...settingLg_en,
   ...editProfilLg_en,
   ...mapLg_en,
   ...historyLg_en,
@@ -32,7 +32,7 @@ export const fr = {
   ...delivery_detailLg_fr,
   ...accueilLg_fr,
   ...signupLg_fr,
-  ...profilLg_fr,
+  ...settingLg_fr,
   ...editProfilLg_fr,
   ...mapLg_fr,
   ...historyLg_fr,

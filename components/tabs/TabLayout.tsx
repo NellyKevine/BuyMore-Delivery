@@ -1,6 +1,6 @@
 import { useLg } from '@/components/langue/MyLanguageProvider';
 import { useTheme } from '@/components/theme/MyThemeProvider';
-import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { Stack, useRouter } from 'expo-router';
 import { Platform, TouchableOpacity } from 'react-native';
 import { Text } from '@/components/ui/text';
@@ -15,31 +15,32 @@ export default function StackLayout() {
   const router = useRouter();
 
   const goToProfil = () => {
-    router.push('/profile');
-  };
-
-  const headerBaseOptions = {
-    headerStyle: {
-      backgroundColor: isDark ? '#021c29ff' : '#fcfdfdff',
-    },
-    headerTintColor: isDark ? '#fcfdfdff' : '#155FDC',
-    headerTitleStyle: {
-      color: isDark ? '#fcfdfdff' : '#155FDC',
-    },
-    ...Platform.select({
-      android: {
-        navigationBarColor: isDark ? '#ffffff' : '#000000',
-      },
-    }),
+    router.push('/settings');
   };
 
   return (
-    <Stack screenOptions={headerBaseOptions}>
-      
-      {/* ACCUEIL */}
+    <Stack
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: isDark ? '#021c29ff' : '#fcfdfdff',
+        },
+        headerTintColor: isDark ? '#fcfdfdff' : '#155FDC',
+        headerTitleStyle: {
+          color: isDark ? '#fcfdfdff' : '#155FDC',
+        },
+        ...Platform.select({
+          android: {
+            navigationBarColor: isDark ? '#ffffff' : '#000000',
+          },
+        }),
+      }}
+    >
+      {/* ACCUEIL (header visible) */}
       <Stack.Screen
         name="index"
         options={{
+          headerShown: true,
+          headerBackVisible: false,
           headerTitle: () => (
             <HStack className="flex-row items-center">
               <Text style={{ fontSize: 24, fontWeight: '800', color: '#155FDC' }}>
@@ -71,6 +72,7 @@ export default function StackLayout() {
               <DrawerLayout />
             </HStack>
           ),
+          headerShadowVisible: false
         }}
       />
 
@@ -78,7 +80,8 @@ export default function StackLayout() {
       <Stack.Screen
         name="deliveries"
         options={{
-          title: t('del_deliveries'),
+          headerShown: false,
+          headerBackVisible: false,
         }}
       />
 
@@ -86,7 +89,8 @@ export default function StackLayout() {
       <Stack.Screen
         name="historique"
         options={{
-          title: t('his_history'),
+          headerShown: false,
+          headerBackVisible: false,
         }}
       />
 
@@ -94,15 +98,17 @@ export default function StackLayout() {
       <Stack.Screen
         name="map"
         options={{
-          title: t('map_map'),
+          headerShown: false,
+          headerBackVisible: false,
         }}
       />
 
       {/* PROFIL */}
       <Stack.Screen
-        name="profile"
+        name="settings"
         options={{
-          title: t('profile'),
+          headerShown: false,
+          headerBackVisible: false,
         }}
       />
 
@@ -110,7 +116,8 @@ export default function StackLayout() {
       <Stack.Screen
         name="editProfil"
         options={{
-          title: t('edit_profile'),
+          headerShown: false,
+          headerBackVisible: false,
         }}
       />
 
@@ -118,10 +125,10 @@ export default function StackLayout() {
       <Stack.Screen
         name="scanCode"
         options={{
-          title: t('scan_code'),
+          headerShown: false,
+          headerBackVisible: false,
         }}
       />
-
     </Stack>
   );
 }

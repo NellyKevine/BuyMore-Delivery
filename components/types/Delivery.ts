@@ -1,4 +1,4 @@
-import { DeliveryStatus } from "./DeliveryStatus";
+import { DeliveryStatus } from "./OrderStatus";
 
 export type Delivery = {
   id: string;
