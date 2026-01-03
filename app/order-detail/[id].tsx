@@ -85,7 +85,7 @@ export default function OrderDetailScreen() {
         </Text>
         <TouchableOpacity 
           className="bg-blue-600 px-6 py-3.5 rounded-lg"
-          onPress={() => router.push("/(tabs)/orders")}
+          onPress={() => router.push("/(tabs)")}
           activeOpacity={0.8}
         >
           <Text className="text-white font-semibold">Retour aux commandes</Text>
@@ -94,7 +94,7 @@ export default function OrderDetailScreen() {
     );
   }
 
-  const comeBack = () => router.push("/(tabs)/orders");
+  const comeBack = () => router.push("/(tabs)");
 
   // === Ouvrir Google Maps pour l'itinéraire ===
   const openMaps = () => {
