@@ -39,13 +39,12 @@ export default function EditProfil() {
   const router = useRouter();
 
   const comeBack = () => {
-    router.push('/profile'); 
+    router.back(); 
   };
 
   // ✅ Tous les states
   const [inputName, setInputName] = useState(user.name || '');
   const [inputEmail, setInputEmail] = useState(user.email || '');
-  const [inputNumber, setInputNumber] = useState(user.number?.toString() || '');
 
   // ✅ États d'erreur
   const [nameError, setNameError] = useState('');
@@ -71,13 +70,7 @@ export default function EditProfil() {
       setEmailError('');
     }
 
-    if (!inputNumber || inputNumber.length != 9 ) {
-      setPhoneError('Numéro de téléphone invalide');
-      isValid = false;
-    } else {
-      setPhoneError('');
-    }
-
+    
     return isValid;
   };
   
@@ -89,7 +82,6 @@ export default function EditProfil() {
       updateUser({
         name: inputName,
         email: inputEmail,
-        number: inputNumber,
         uriImage: uriImage,
       });
       comeBack();
@@ -100,7 +92,6 @@ export default function EditProfil() {
     comeBack();
     setInputName(user.name);
     setInputEmail(user.email);
-    setInputNumber(user.number);
     setNameError('');
     setEmailError('');
     setPhoneError('');
@@ -213,36 +204,7 @@ export default function EditProfil() {
                                 </VStack>
                             </FormControl>
 
-                            {/* Téléphone */}
-                            <FormControl isInvalid={!!phoneError} size="md">
-                                <VStack space="xs">
-                                    <FormControlLabel>
-                                        <FormControlLabelText>{t("edt_number")}</FormControlLabelText>
-                                    </FormControlLabel>
-                                    <Input size="md">
-                                        <InputSlot className="pl-3">
-                                            <Ionicons name="call-outline" size={20} color="#666" />
-                                        </InputSlot>
-                                        <InputField placeholder="+237 6XX XXX XXX" value={inputNumber}
-                                            onChangeText={(text) => {
-                                                setInputNumber(text);
-                                                if (phoneError) setPhoneError('');
-                                            }}
-                                            keyboardType="phone-pad"
-                                        />
-                                    </Input>
-                                    <FormControlHelper>
-                                        <FormControlHelperText>{t("edt_numberForm")}
-                                        </FormControlHelperText>
-                                    </FormControlHelper>
-                                    {phoneError && (
-                                        <FormControlError>
-                                            <FormControlErrorIcon as={AlertCircleIcon} />
-                                            <FormControlErrorText>{phoneError}</FormControlErrorText>
-                                        </FormControlError>
-                                    )}
-                                </VStack>
-                            </FormControl>
+                           
                         </VStack>
                     </ScrollView>
                 </TouchableWithoutFeedback>

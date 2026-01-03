@@ -13,6 +13,8 @@ import "../global.css";
 import * as Notifications from "expo-notifications";
 import { useRouter } from "expo-router";
 import { Alert } from "react-native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {  useSegments } from 'expo-router';
 
 // Configuration À JOUR pour Expo SDK 54
 Notifications.setNotificationHandler({
@@ -28,6 +30,15 @@ Notifications.setNotificationHandler({
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+
+  
+const segments = useSegments();
+
+console.log("Segments actuels:", segments);
+
+  // Nouveau : client React Query global
+  const queryClient = new QueryClient();
+  
   const router = useRouter(); // ← Maintenant à l'intérieur du composant → OK !
 
   useEffect(() => {
@@ -36,7 +47,7 @@ export default function RootLayout() {
       console.log("Notification cliquée !", response);
 
       // Redirection vers l'écran des livraisons (adapte le chemin si besoin)
-      router.replace("/deliveries");
+      router.replace("/(tabs)/orders");
     });
 
     // Quand une notification arrive pendant que l'app est ouverte
@@ -63,14 +74,16 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <SafeAreaProvider>
-      <MyThemeProvider>
-        <MyLanguageProvider>
-          <MyUserProvider>
-            <Slot />
-          </MyUserProvider>
-        </MyLanguageProvider>
-      </MyThemeProvider>
-    </SafeAreaProvider>
+    <QueryClientProvider client={queryClient}>
+      <SafeAreaProvider>
+        <MyThemeProvider>
+          <MyLanguageProvider>
+            <MyUserProvider>
+              <Slot />
+            </MyUserProvider>
+          </MyLanguageProvider>
+        </MyThemeProvider>
+      </SafeAreaProvider>
+    </QueryClientProvider>
   );
 }

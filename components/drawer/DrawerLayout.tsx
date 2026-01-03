@@ -36,10 +36,7 @@ export function DrawerLayout() {
        setShowDrawer(false);
     };
    
-    const handleSignup = () => {
-       router.push('/signup'); 
-       setShowDrawer(false);
-    };
+    
 
     const goToSetting = () => {
        router.push('/settings'); 
@@ -47,7 +44,7 @@ export function DrawerLayout() {
     };
 
     const goToDeliveries = () => {
-       router.push('/deliveries'); 
+       router.push('/orders'); 
        setShowDrawer(false);
     };
 

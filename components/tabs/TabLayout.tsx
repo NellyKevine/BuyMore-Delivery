@@ -78,7 +78,7 @@ export default function StackLayout() {
 
       {/* LIVRAISONS */}
       <Stack.Screen
-        name="deliveries"
+        name="orders"
         options={{
           headerShown: false,
           headerBackVisible: false,
