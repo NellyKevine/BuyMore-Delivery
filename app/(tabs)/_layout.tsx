@@ -14,14 +14,14 @@ import { DrawerLayout } from '@/components/drawer/DrawerLayout';
   const { isLoggedIn } = useUser(); 
   const { t } = useLg(); 
   const router = useRouter(); 
-  const goToProfil = () => { router.push('/settings'); } 
+  const goToProfil = () => { router.push('/profile'); } 
 
   return ( 
   <Tabs screenOptions={{ 
     tabBarStyle: { 
       backgroundColor: isDark ? '#021c29ff' : '#fcfdfdff', }, 
-      tabBarActiveTintColor: isDark ? '#fff' : '#155FDC', 
-      tabBarInactiveTintColor: isDark ? '#a3a0a0ff' : '#555', 
+      tabBarActiveTintColor:  '#155FDC', 
+      tabBarInactiveTintColor: isDark ? 'white' : '#555', 
       headerStyle: { backgroundColor: isDark ? '#021c29ff' : '#fcfdfdff', }, 
       headerTitleStyle: { color: isDark ? '#fcfdfdff' : '#155FDC',}, 
       ...Platform.select({ android: { navigationBarColor: isDark ? '#ffffff' : '#000000', 
@@ -29,35 +29,35 @@ import { DrawerLayout } from '@/components/drawer/DrawerLayout';
 
          {/* Accueil */} 
         <Tabs.Screen name="index" 
-          options={{ tabBarLabel: t('acc_accueil'), 
+          options={{ 
+            tabBarLabel: t('acc_accueil'), 
             tabBarIcon: ({ color, size }) => ( <Ionicons name="home" size={size} color={color} /> ), 
-              headerStyle: { elevation: 1, // Supprime l'ombre sous le header 
-              shadowOpacity: 0, }, 
-              headerTitle: () => ( 
-              <HStack className="flex-row items-center "> 
-                <Text style={{ fontSize: 24, fontWeight: '800', color: '#155FDC' }} > Buy </Text> 
-                <Text style={{ fontSize: 24, fontWeight: '800', color: 'white',textShadowColor: '#155FDC',textShadowOffset: { width: 0, height: 0 },textShadowRadius: 10,}}> More </Text> 
+            headerStyle: { elevation: 0, // Supprime l'ombre sous le header 
+                           shadowOpacity: 0,
+                           backgroundColor: isDark ? "#021c29ff" : "#F6F6F6" ,
+            }, 
+             
+            headerTitle: () => ( 
+              <HStack > 
+                <Text style={{ fontSize: 24, fontWeight: '800', color: '#155FDC' }} > Buy 
+                  <Text style={{ fontSize: 24, fontWeight: '800', color: 'white',textShadowColor: '#155FDC',textShadowOffset: { width: 0, height: 0 },textShadowRadius: 10,}}>More </Text>
+                </Text> 
+                 
               </HStack> 
-              ), 
-              headerRight: () => ( 
-                <HStack> 
-                  <TouchableOpacity onPress={goToProfil} style={{ marginRight: 30,}} > 
-                    <Ionicons name="notifications-outline" size={21} color="#155FDC" /> 
+            ), 
+            headerRight: () => ( 
+                <HStack className="items-center"> 
+                  <TouchableOpacity  style={{ marginRight: 30,}} > 
+                    <Ionicons name="notifications-outline" size={21} color={isDark ? 'white' : '#155FDC'} /> 
                   </TouchableOpacity> 
-                  <DrawerLayout/> 
-                </HStack> ), 
-              }} /> 
+                   
+                </HStack> 
+            ), 
+          }} 
+        /> 
 
 
-              <Tabs.Screen name="orders" 
-                options={{ title: t('del_deliveries'), 
-                  tabBarLabel: t('del_deliveries'), 
-                  headerShown: false, 
-                  tabBarIcon: ({ color, size }) => ( 
-                    <Ionicons name="grid-outline" size={size} color={color} />
-                    //...(!isLoggedIn && { href: null }) 
-                    ), 
-                  }} /> 
+               
               {/* Historique */} 
               <Tabs.Screen name="historique" 
                 options={{ title: t('his_history'), 
@@ -68,11 +68,11 @@ import { DrawerLayout } from '@/components/drawer/DrawerLayout';
                 }} /> 
 
                 {/* Historique */} 
-              <Tabs.Screen name="settings" 
-                options={{ title: "settings", 
-                  tabBarLabel: "settings", 
+              <Tabs.Screen name= "settings"
+                options={{ title:  t('set_setting'), 
+                  tabBarLabel: t('set_setting'), 
                   tabBarIcon: ({ color, size }) => ( 
-                    <AntDesign name="history" size={size} color={color} /> ), 
+                    <Ionicons name="settings-outline" size={size} color={color} /> ), 
                   headerShown: false, 
                 }} />
                   

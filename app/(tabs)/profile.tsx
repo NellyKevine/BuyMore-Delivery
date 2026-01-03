@@ -81,13 +81,13 @@ export default function SettingsPage() {
 
 
   return (
-    <SafeAreaView className="flex-1 bg-fc-primary " edges={['top']}>
+    <SafeAreaView className="flex-1  " edges={['top']} style={{ backgroundColor: isDark ? "#021c29ff" : "#F6F6F6" }}>
 
-        {isDark?<StatusBar translucent backgroundColor="transparent" barStyle="light-content" />:<StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />}
-        <VStack space="md" reversed={false} className=" flex-1 items-center " style={{ backgroundColor: isDark ? "#021c29ff" : "#F6F6F6" }}>
+        
+        <VStack space="md" reversed={false} className=" flex-1 items-center pt-6 " style={{ backgroundColor: isDark ? "#021c29ff" : "#F6F6F6" }}>
             {isLoggedIn?(
                 <HStack className=" p-1 border border-typography-200 rounded-full absolute top-[6rem] left-1/3 z-10 bg-white">
-                    <Avatar size="2xl" className="bg-yellow-400  ">
+                    <Avatar size="2xl" className="bg-fc-primary  ">
                         {user.uriImage?
                             <AvatarImage
                             source={{
@@ -104,20 +104,14 @@ export default function SettingsPage() {
                 </Avatar>   
                 </HStack>
             )}
-            <VStack space="2xl"className="bg-fc-primary w-full p-4 rounded-b-[8vw]  relative  items-center ">
+            <VStack space="2xl"className=" w-full px-5  relative  items-center ">
                 
                 <HStack space="2xl" className="mt-2 w-full items-center">
                     <TouchableOpacity onPress={comeBack} className="" >
                         <Ionicons name="chevron-back" size={30} color="white" />
                     </TouchableOpacity>
                     <Text size="2xl" bold className="text-white text-center ">{t("pro_profil")}</Text>
-                    <VStack  className=" flex-1 items-end">
-                        <Button variant="link" size="md" className="p-0">
-                            <FontAwesome5 name="crown" size={18} color="#FFD700" />
-                            <ButtonText className="text-fc-gold font-bold">Premium</ButtonText>
-                            <ButtonIcon className="mr-1 text-fc-gold" size="xl" as={ArrowRightIcon} />
-                        </Button>
-                    </VStack> 
+                    
                 </HStack>
                 
                 
@@ -136,18 +130,18 @@ export default function SettingsPage() {
     
             </VStack>
             <VStack space="4xl" className="my-10 w-full flex-1 h-full items-center">
-                {isLoggedIn && (
+                
                 <Button variant="solid"  size="md" className="bg-fc-secondary rounded-full mt-7    " isPressed={false} onPress={goToEditProfil}>
                     <Feather name="edit-3" size={18} color="white" />
                     <ButtonText className="text-white text-center font-semibold">{t("set_editProfil")}</ButtonText>
                 </Button> 
                     
-                )}
+            
                 <VStack space="md" className=" w-full h-full mt-7 flex-1 items-center px-10">
 
                         <HStack space="md" reversed={false} className="items-center justify-center w-full justify-between"> 
                             <HStack space="md" className="items-center">
-                            <FontAwesome name="user" size={24} color="#d8b02bff" />
+                            <FontAwesome name="user" size={24} color="#979590ff" />
                             <Text size="lg" bold>{t("set_nom")}</Text>
                             </HStack>
                             <Text className="text-typography-500 text-sm opacity-80 ml-6">{isLoggedIn?user.name:"UserName"}</Text>
@@ -157,7 +151,7 @@ export default function SettingsPage() {
 
                         <HStack space="md" reversed={false} className="items-center justify-center w-full justify-between"> 
                             <HStack space="md" className="items-center">
-                            <Ionicons name="mail" size={20} color="#d8b02bff" />
+                            <Ionicons name="mail" size={20} color="#979590ff" />
                             <Text size="lg" bold>Email</Text>
                             </HStack>
                             <Text className="text-typography-500 text-sm opacity-80 ml-6">{isLoggedIn?user.email:"emailUser@gmail.com"}</Text>
@@ -167,7 +161,7 @@ export default function SettingsPage() {
                     
                         <HStack space="md" reversed={false} className=" justify-center items-center w-full justify-between "> 
                             <HStack space="md" className="items-center">
-                            <FontAwesome5 name="history" size={20} color="#d8b02bff" />
+                            <FontAwesome5 name="history" size={20} color="#979590ff" />
                             <Text size="lg" bold>{t("pro_trajet")}</Text>
                             </HStack>
                             <Text className="text-typography-500 text-sm opacity-80 ml-6">Ngousso - MaKene</Text>

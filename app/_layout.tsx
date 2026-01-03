@@ -47,7 +47,7 @@ console.log("Segments actuels:", segments);
       console.log("Notification cliquée !", response);
 
       // Redirection vers l'écran des livraisons (adapte le chemin si besoin)
-      router.replace("/(tabs)/orders");
+      router.replace("/(tabs)");
     });
 
     // Quand une notification arrive pendant que l'app est ouverte

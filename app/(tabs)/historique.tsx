@@ -8,10 +8,14 @@ import { Text } from "@/components/ui/text";
 import { OrderFilters } from "@/components/order/OrderFilters";
 import { Ionicons } from '@expo/vector-icons';
 import { FilterType } from "@/types/FilterType"
-
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { Box } from '@/components/ui/box';
+import { useTheme } from '@/components/theme/MyThemeProvider';
 
 
 export default function OrdersScreen() {
+  const { isDark } = useTheme();
   const { data: orders, isLoading, error, refetch } = useOrders();
   const [activeFilter, setActiveFilter] = useState<FilterType>('in_transit');
   const [refreshing, setRefreshing] = useState(false);
@@ -49,9 +53,9 @@ export default function OrdersScreen() {
 
   if (isLoading && !refreshing) {
     return (
-      <View className="flex-1 justify-center items-center bg-white">
+      <View className="flex-1 justify-center items-center " style={{ backgroundColor: isDark ? "#021c29ff" : "#F6F6F6" }}>
         <ActivityIndicator size="large" color="#155FDC" />
-        <Text className="mt-4 text-gray-600">Chargement des commandes...</Text>
+        <Text className="mt-4 text-typography-600">Chargement des commandes...</Text>
       </View>
     );
   }
@@ -62,12 +66,23 @@ export default function OrdersScreen() {
       : error.message;
 
     return (
-      <View className="flex-1 justify-center items-center bg-white p-6">
+      <SafeAreaView className="flex-1 " style={{ backgroundColor: isDark ? "#021c29ff" : "#F6F6F6" }}>
+             
+        <Box className="px-5 pt-6 pb-4">
+          <HStack className="items-center mb-4">
+            <VStack className="flex-1 ml-3">
+              <Text className="text-2xl font-bold text-typography-900">
+                Historique de mes livraisons
+              </Text>        
+            </VStack>
+          </HStack>
+        </Box>
+      <View className="flex-1 justify-center items-center  p-6" style={{ backgroundColor: isDark ? "#021c29ff" : "#F6F6F6" }}>
         <Ionicons name="wifi-outline" size={64} color="#9ca3af" />
-        <Text className="text-2xl font-bold text-gray-900 mt-6 mb-2 text-center">
+        <Text className="text-2xl font-bold text-typography-900 mt-6 mb-2 text-center">
           {errorMessage.includes("connexion") ? "Pas de connexion" : "Erreur"}
         </Text>
-        <Text className="text-gray-500 text-center mb-8 px-8">
+        <Text className="text-typography-500 text-center mb-8 px-8">
           {errorMessage.includes("connexion") 
             ? "Vérifiez votre connexion internet et réessayez."
             : "Impossible de charger les commandes."
@@ -81,35 +96,36 @@ export default function OrdersScreen() {
           <Text className="text-white font-semibold ml-2">Réessayer</Text>
         </View>
       </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 " style={{ backgroundColor: isDark ? "#021c29ff" : "#F6F6F6" }}>
       {/* En-tête principal */}
-      <View className="px-5 pt-6 pb-4">
-        <View className="flex-row justify-between items-start mb-3">
-          <View className="flex-1">
-            <Text className="text-3xl font-bold text-gray-900">
-              Mes livraisons
+      <Box className="px-5 pt-6 pb-4">
+        <HStack className="flex-row justify-between items-start mb-3">
+          <VStack className="flex-1">
+            <Text className="text-3xl font-bold text-typography-900">
+              Historique de mes livraisons
             </Text>
-            <Text className="text-gray-500 mt-2">
+            <Text className="text-typography-500 mt-2">
               {stats.in_transit} commande{stats.all !== 1 ? 's' : ''} à traiter
             </Text>
-          </View>
+          </VStack>
           
           {/* Indicateur de statut principal - Cube pour "assignée" */}
-          <View className="items-center bg-blue-50 px-4 py-3 rounded-xl">
-            <View className="flex-row items-center">
+          <VStack className="items-center bg-blue-50 px-4 py-3 rounded-xl">
+            <HStack className="flex-row items-center">
               <Ionicons name="cube" size={20} color="#155FDC" /> 
               <Text className="text-blue-700 font-bold text-2xl ml-2">
                 {stats.in_transit}
               </Text>
-            </View>
+            </HStack>
             <Text className="text-blue-600 text-sm font-medium mt-1">Assignées</Text>
-          </View>
-        </View>
-      </View>
+          </VStack>
+        </HStack>
+      </Box>
 
       {/* Barre de filtres */}
       <OrderFilters 
@@ -141,7 +157,7 @@ export default function OrdersScreen() {
       ) : (
         // État vide
         <View className="flex-1 justify-center items-center p-8">
-          <View className="bg-gray-100 p-7 rounded-2xl mb-6">
+          <View className="bg-typography-100 p-7 rounded-2xl mb-6">
             <Ionicons 
               name={activeFilter === 'ALL' ? "cube-outline" : "funnel-outline"} 
               size={70} 
@@ -149,14 +165,14 @@ export default function OrdersScreen() {
             />
           </View>
           
-          <Text className="text-2xl font-bold text-gray-900 mb-3 text-center">
+          <Text className="text-2xl font-bold text-typography-900 mb-3 text-center">
             {activeFilter === 'ALL' 
               ? "Aucune commande disponible"
               : "Aucune commande correspondante"
             }
           </Text>
           
-          <Text className="text-gray-500 text-center mb-8 px-8">
+          <Text className="text-typography-500 text-center mb-8 px-8">
             {activeFilter === 'ALL'
               ? "Vous n'avez pas de commandes à livrer pour le moment."
               : `Vous n'avez pas de commandes avec le statut "${activeFilter}".`

@@ -78,65 +78,18 @@ export default function SettingsPage() {
   const currentTheme = isDark ? "Sombre" : "Clair";
   const currentLangue = locale === "fr" ? "Français" : "English";
   return (
-    <SafeAreaView className="flex-1 bg-fc-primary " edges={['top']}>
-      {isDark?<StatusBar translucent backgroundColor="transparent" barStyle="light-content" />:<StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />}
-              
-      <VStack space="md" reversed={false} className="flex-1 items-center" style={{ backgroundColor: isDark ? "#021c29ff" : "#F6F6F6" }}
->
-        <VStack space="2xl"className="bg-fc-primary relative w-full p-4 rounded-br-[8vw] ">
-          {isLoggedIn?(
-                <HStack className=" p-1 border border-typography-200 rounded-full absolute top-[6rem] left-10 z-10 bg-white">
-                    <Avatar size="2xl" className="bg-yellow-400  ">
-                        {user.uriImage?
-                          <AvatarImage source={{ uri: user.uriImage,}} /> 
-                          :
-                          <AvatarFallbackText className="text-white">{user.name || 'User'}</AvatarFallbackText>
-                        }
-                    </Avatar>
-                </HStack>
-            ):(
-                <HStack className=" p-1 border border-typography-300 rounded-full absolute top-[6rem] left-10 z-10 bg-white z-10">
-                <Avatar size="2xl" className="bg-yellow-400 ">
-                    <Ionicons name="person" size={40} color="white" />
-                </Avatar>   
-                </HStack>
-            )}
-            <VStack space="2xl"className="bg-fc-primary w-full p-3 px-0 rounded-b-[10vw]  relative  items-center ">
-                
-                <HStack space="2xl" className="w-full  ">
-                    <TouchableOpacity onPress={comeBack} className="" >
-                        <Ionicons name="chevron-back" size={30} color="white" />
-                    </TouchableOpacity>
-                    
-                    <Text size="2xl" bold className="text-white text-center ">{t("set_setting")}</Text>
-                    <VStack  className=" flex-1 items-end">
-                        <Button variant="link" size="md" className="p-0">
-                            <FontAwesome5 name="crown" size={18} color="#FFD700" />
-                            <ButtonText className="text-fc-gold font-bold">Premium</ButtonText>
-                            <ButtonIcon className="mr-1 text-fc-gold" size="xl" as={ArrowRightIcon} />
-                        </Button>
-                    </VStack> 
-                </HStack>
-                
-                
-                <VStack space="xs" className=" mr-20  relative top-3  items-center mb-5  w-full  items-end">
-
-                    <HStack space="4xl" className=" w-2/5">
-                        {isLoggedIn?(
-                            <Text className="text-white text-center text-xl font-bold  truncate">{user.name}</Text>
-                            ):(
-                            <Text className="text-white text-center text-xl font-bold">
-                                        {t('notLoggedIn')}
-                            </Text> 
-                        )}
-                    </HStack>
-                </VStack>
-    
-            </VStack>
-              
-        </VStack>
+    <SafeAreaView className="flex-1 bg-sky-50 " edges={['top']} style={{ backgroundColor: isDark ? "#021c29ff" : "#F6F6F6" }}>
+             
+      <VStack space="md" reversed={false} className="flex-1 items-center pt-6 " >
         
-        <VStack className="items-center w-full h-full px-6 py-10 mt-8" space="xl" reversed={false}>
+        <HStack space="2xl" className="w-full ml-7 px-5 ">
+                    
+          <Text size="2xl" bold className="text-typography-900 text-center ">{t("set_setting")}</Text>
+                     
+        </HStack>
+                
+        
+        <VStack className="items-center w-full h-full px-6 py-10 mt-5" space="xl" reversed={false}>
           
           {/* Section Thème */}
           <HStack space="md" reversed={false} className="justify-between items-center " >
@@ -159,7 +112,7 @@ export default function SettingsPage() {
               size="md"
               value={isSwitchOn}
               onValueChange={handleToggleTheme}
-              trackColor={{ false: "#d4d4d4", true: "#FFD700" }}
+              trackColor={{ false: "#d4d4d4", true: "#155FDC" }}
               thumbColor="#fafafa"
               ios_backgroundColor="#d4d4d4"
             />
@@ -170,7 +123,7 @@ export default function SettingsPage() {
           {/* Section Langue */}
           <HStack space="md" reversed={false} className="justify-between items-center">
             <HStack space="md" reversed={false} className="items-center flex-1"> 
-              <Ionicons name="globe-outline" size={20} color="#d8b02bff" />
+              <Ionicons name="globe-outline" size={20} color="#155FDC" />
               <VStack space="xs" reversed={false} className="flex-1">
                 <Text size="lg" bold> {t("set_langue")} </Text>
                 <Text size="sm" className="text-gray-500"> {t("set_langueActuelle.langue", { langue: currentLangue })} </Text>
@@ -182,7 +135,7 @@ export default function SettingsPage() {
               <Select onValueChange={handleLanguageChange} selectedValue={locale} initialLabel={currentLangue}>
                 <SelectTrigger variant="underlined" size="sm">
                   <SelectInput placeholder={t("set_langue")} />
-                  <SelectIcon as={ChevronDownIcon} className="ml-12" />
+                  <SelectIcon as={ChevronDownIcon} className="ml-12 " />
                 </SelectTrigger>
                 <SelectPortal>
                   <SelectBackdrop />
@@ -202,52 +155,52 @@ export default function SettingsPage() {
             <Pressable >
               <HStack space="md" reversed={false} className=" w-full justify-between items-center">
                 <HStack space="md" className="items-center">
-                  <Ionicons name="help-circle-outline" size={24} color="#d8b02bff" />
+                  <Ionicons name="help-circle-outline" size={24} color="#155FDC" />
                   <Text size="lg" bold>{t("set_aide")}</Text>
                 </HStack>
                 
-                <Ionicons name="chevron-forward" size={15} color="gray" />
+                <Ionicons name="chevron-forward" size={15} color="#155FDC" />
               </HStack>
             </Pressable>
             <Divider/>
             <Pressable >
               <HStack space="md" className=" w-full justify-between items-center">
                 <HStack space="md" className="items-center">
-                  <Ionicons name="shield-checkmark-sharp" size={24} color="#d8b02bff" />
+                  <Ionicons name="shield-checkmark-sharp" size={24} color="#155FDC" />
                   <Text size="lg" bold>{t("set_politique")}</Text>
                 </HStack>  
                 
-                <Ionicons name="chevron-forward" size={15} color="gray" />
+                <Ionicons name="chevron-forward" size={15} color="#155FDC" />
               </HStack>
             </Pressable>
             <Divider/>
             <Pressable >
               <HStack space="xl" className="w-full justify-between items-center">
                 <HStack space="md" className="items-center">
-                  <Ionicons name="document-text-outline" size={24} color="#d8b02bff" />
+                  <Ionicons name="document-text-outline" size={24} color="#155FDC" />
                   <Text size="lg" bold>{t("set_conditionUse")}</Text>
                 </HStack>
                 
-                <Ionicons name="chevron-forward" size={15} color="gray" />
+                <Ionicons name="chevron-forward" size={15} color="#155FDC" />
               </HStack>
             </Pressable>
             <Divider/>
-              {isLoggedIn &&(
+              
                 <VStack space="md" className="">
                   
                   <Pressable  onPress={handleLogout}  >
                     <HStack space="xl" className="w-full justify-between items-center">
                       <HStack space="md" className="items-center">
-                        <Ionicons name="log-out-outline" size={20} color="red" />
-                        <Text size="lg" bold className="text-red-600">{t('logout')}</Text>
+                        <Ionicons name="log-out-outline" size={20} color={isDark?"#e93030ff":"#bb0b0bff"} />
+                        <Text size="lg" bold className="text-indicator-error">{t('logout')}</Text>
                       </HStack>
-                      <Ionicons name="chevron-forward" size={15} color="red" />
+                      <Ionicons name="chevron-forward" size={15} color={isDark?"#e93030ff":"#bb0b0bff"} />
                     </HStack>
                   </Pressable>
                 </VStack>
                 
-              )}
-              {isLoggedIn && (<Divider/>)}
+              
+              <Divider/>
           
               
         </VStack>
